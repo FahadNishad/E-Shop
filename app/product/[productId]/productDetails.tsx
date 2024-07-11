@@ -52,6 +52,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   console.log(cartProducts);
 
+  // check the product is already in the cart or not 
   useEffect(() => {
     setIsProductInCart(false);
     if (cartProducts) {
@@ -64,6 +65,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
   }, [cartProducts]);
 
+
+  
   const productRating =
     product.reviews.reduce((acc: number, item: any) => item.rating + acc, 0) /
     product.reviews.length;
