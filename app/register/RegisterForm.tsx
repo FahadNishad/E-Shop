@@ -72,9 +72,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
       <Heading title="Sign up for E-Shop" />
       <Button
         outLine
-        label="Sign up With Google"
+        label="Continue With Google"
         icon={AiOutlineGoogle}
-        onClick={() => {}}
+        onClick={() => {signIn('google')}}
       />
       <hr className="bg-slate-300 w-full h-px" />
       <Input

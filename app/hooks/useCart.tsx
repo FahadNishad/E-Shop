@@ -7,6 +7,7 @@ import {
 } from "react";
 import { CartProductType } from "../product/[productId]/productDetails";
 import toast from "react-hot-toast";
+import { json } from "stream/consumers";
 
 type CartContextType = {
   cartTotalQty: number;
@@ -17,6 +18,8 @@ type CartContextType = {
   handleCartQtIncrease: (product: CartProductType) => void;
   handleCartQtDecrease: (product: CartProductType) => void;
   handleClearCart: () => void;
+  paymentIntent: string | null;
+  handleSetPaymentIntent: (val: string | null) => void;
 };
 
 export const CartContext = createContext<CartContextType | null>(null);
@@ -31,23 +34,24 @@ export const CartContextProvider = (props: Props) => {
   const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(
     null
   );
-
-  console.log('qty', cartTotalQty);
-  console.log('total amount', cartTotalAmount);
-
-  
+  const [paymentIntent, setPaymentIntent] = useState<string | null>(null);
 
   // Getting the cart items
   useEffect(() => {
     const cartItems = localStorage.getItem("eShopCartItems");
     if (cartItems) {
       const cProducts: CartProductType[] = JSON.parse(cartItems);
+      const eShopPaymentIntent: any =
+        localStorage.getItem("eShopPaymentIntent");
+      const paymentIntent: string | null = JSON.parse(eShopPaymentIntent);
+
+      setPaymentIntent(paymentIntent);
+
       setCartProducts(cProducts);
     }
   }, []);
 
-
-  // function that give cart total quantity and total amount 
+  // function that give cart total quantity and total amount
 
   useEffect(() => {
     const getTotals = () => {
@@ -64,9 +68,8 @@ export const CartContextProvider = (props: Props) => {
             qty: 0,
           }
         );
-        setCartTotalQty(qty)
-        setCartTotalAmount(total)
-
+        setCartTotalQty(qty);
+        setCartTotalAmount(total);
       }
     };
     getTotals();
@@ -162,6 +165,14 @@ export const CartContextProvider = (props: Props) => {
     localStorage.setItem("eShopCartItems", JSON.stringify(null));
   }, [cartProducts]);
 
+  const handleSetPaymentIntent = useCallback(
+    (val: string | null) => {
+      setPaymentIntent(val);
+      localStorage.setItem("eShopPaymentIntent", JSON.stringify(val));
+    },
+    [paymentIntent]
+  );
+
   // We access these values all over the application, these are the global values
   const value = {
     cartTotalQty,
@@ -172,6 +183,8 @@ export const CartContextProvider = (props: Props) => {
     handleCartQtIncrease,
     handleCartQtDecrease,
     handleClearCart,
+    paymentIntent,
+    handleSetPaymentIntent
   };
 
   return <CartContext.Provider value={value} {...props} />;
