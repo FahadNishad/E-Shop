@@ -17,7 +17,7 @@ import {
   MdRemoveRedEye,
 } from "react-icons/md";
 
-interface ManageOrdersClientProps {
+interface OrdersClientProps {
   orders: ExtendedOrder[];
 }
 
@@ -25,7 +25,7 @@ type ExtendedOrder = Order & {
   user: User;
 };
 
-const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
+const OrdersClient: React.FC<OrdersClientProps> = ({ orders }) => {
   const router = useRouter();
 
   const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
@@ -137,16 +137,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
         const action = currentAction[id];
         return (
           <div className="flex justify-between gap-4 w-full ">
-            <ActionBtn
-              loading={isLoading && action === 'dispatched'}
-              icon={MdDeliveryDining}
-              onclick={() => handleDispatch(id)}
-            />
-            <ActionBtn
-              loading={isLoading && action === 'delivered'}
-              icon={MdDone}
-              onclick={() => handleDelivered(id)}
-            />
+            
             <ActionBtn
               icon={MdRemoveRedEye}
               onclick={() => {
@@ -159,37 +150,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
     },
   ];
 
-  const handleDispatch = useCallback((id: string) => {
-    setLoadingStates(prev => ({ ...prev, [id]: true }));
-    setCurrentAction(prev => ({ ...prev, [id]: 'dispatched' }));
-    axios
-      .put("/api/order", { id, deliveryStatus: "dispatched" })
-      .then((res) => {
-        setLoadingStates(prev => ({ ...prev, [id]: false }));
-        toast.success("Order Dispatched");
-        router.refresh();
-      })
-      .catch((err) => {
-        setLoadingStates(prev => ({ ...prev, [id]: false }));
-        toast.error("Oops! Something went wrong");
-      });
-  }, [router]);
-
-  const handleDelivered = useCallback((id: string) => {
-    setLoadingStates(prev => ({ ...prev, [id]: true }));
-    setCurrentAction(prev => ({ ...prev, [id]: 'delivered' }));
-    axios
-      .put("/api/order", { id, deliveryStatus: "delivered" })
-      .then((res) => {
-        setLoadingStates(prev => ({ ...prev, [id]: false }));
-        toast.success("Order Delivered");
-        router.refresh();
-      })
-      .catch((err) => {
-        setLoadingStates(prev => ({ ...prev, [id]: false }));
-        toast.error("Oops! Something went wrong");
-      });
-  }, [router]);
+ 
 
   return (
     <div className="max-w-[1150px] m-auto text-xl">
@@ -214,4 +175,4 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
   );
 };
 
-export default ManageOrdersClient;
+export default OrdersClient;
