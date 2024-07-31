@@ -30,10 +30,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ currentUser }) => {
     },
   });
 
-  useEffect(() => {
-    router.push("/cart");
-    router.refresh();
-  }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
